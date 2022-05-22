@@ -1,0 +1,79 @@
+import random
+from words import words
+import string
+import emoji
+import os
+
+
+def palavra_valida(words):
+
+    palavra = random.choice(words)
+
+    while "-" in palavra or " " in palavra or len(palavra) > 14:
+        palavra = random.choice(words)
+
+    return palavra.upper()
+
+def jogo_da_forca(time):
+    palavra = palavra_valida(words) #pegando uma palavra válida da lista
+    letras_palavra = set(palavra) #criando uma coleção com as letras da palavra
+    alfabeto = set(string.ascii_uppercase) #definindo os caracteres válidos em UPPERCASE
+    letras_usadas = set() # coleção que irá ser incrementada com o decorrer do programa
+    vida = 10
+    
+    while vida > 0  and len(letras_palavra) > 0: #loop que irá funcionar até ser zerada a coleção de letras da palavra ou as vidas
+
+        
+        print(emoji.emojize("Vidas: "+ vida*":heart: ", use_aliases=True))
+
+        print("Letras usadas -> "," ".join(letras_usadas)) #mostrar as letras usadas pelo usuário até o momento
+
+        mostrar_lista_letras = [letra_usuario if letra_usuario in letras_usadas else "-" for letra_usuario in palavra]
+        print("Palavra atual -> ", "".join(mostrar_lista_letras))
+
+
+        letra_usuario = input("Chute uma letra: ").upper() 
+        
+
+        if letra_usuario in alfabeto - letras_usadas: #condição que adicionará a letra digitada a lista de letras digitadas
+            letras_usadas.add(letra_usuario)
+            os.system("cls")
+            if letra_usuario in letras_palavra:#condição que irá reduzindo as letras da palavra até que chegue a zero
+                letras_palavra.remove(letra_usuario)
+            else:
+                vida -= 1
+                os.system("cls")
+                print("Essa letra não pertence a palavra, -1 vida")
+                
+        elif letra_usuario in letra_usuario:
+            os.system("cls")
+            print("Você já digitou essa letra, tente novamente")
+            
+        else:
+            os.system("cls")
+            print("Você não digitou uma letra válida, tente novamente")
+            
+    print(f"A palavra é: {palavra}")
+    print(f"Pontos feitos: {vida}")
+    time = vida
+    
+    
+
+num_times = int(input("Quantos times irão jogar? "))
+cont = 0
+times = ([0] * num_times) - 1
+
+while cont <= 2:
+    cont+=1
+    for i in range(0,num_times):
+        print(f"Rodada {cont} / time[{i+1}]: ")
+        jogo_da_forca(times[i])
+        
+print("Pontuação final: ")
+for i in range(1,num_times):
+    vencedor = 0
+    print(f"Time {i} = {times[i]} pontos\n")
+    if times[i] > vencedor:
+        vencedor = i
+
+print(f"Vencedor: Time {i}")
