@@ -3,28 +3,38 @@ from words import words
 import string
 import emoji
 import os
+from time import sleep
 
 
-def palavra_valida(words):
+def palavra_valida(words,lista_palavras_usadas):
 
     palavra = random.choice(words)
+    
+    
 
-    while "-" in palavra or " " in palavra or len(palavra) > 14:
+    while "-" in palavra or " " in palavra or len(palavra) > 14 or palavra in lista_palavras_usadas:
         palavra = random.choice(words)
-
+        
+        
+    lista_palavras_usadas.append(palavra)
     return palavra.upper()
+            
+        
+    
 
-def jogo_da_forca(time):
-    palavra = palavra_valida(words) #pegando uma palavra válida da lista
+def jogo_da_forca(pontos):
+    lista_palavras_usadas = []
+    palavra = palavra_valida(words,lista_palavras_usadas) #pegando uma palavra válida da lista
     letras_palavra = set(palavra) #criando uma coleção com as letras da palavra
     alfabeto = set(string.ascii_uppercase) #definindo os caracteres válidos em UPPERCASE
     letras_usadas = set() # coleção que irá ser incrementada com o decorrer do programa
     vida = 10
+    print(lista_palavras_usadas)
     
     while vida > 0  and len(letras_palavra) > 0: #loop que irá funcionar até ser zerada a coleção de letras da palavra ou as vidas
 
         
-        print(emoji.emojize("Vidas: "+ vida*":heart: ", use_aliases=True))
+        print(emoji.emojize(f"Vidas({vida}): "+ vida*":heart: ", language='alias'))
 
         print("Letras usadas -> "," ".join(letras_usadas)) #mostrar as letras usadas pelo usuário até o momento
 
@@ -55,25 +65,35 @@ def jogo_da_forca(time):
             
     print(f"A palavra é: {palavra}")
     print(f"Pontos feitos: {vida}")
-    time = vida
+    sleep(3)
+    os.system("cls")
+    pontos = vida
+    return pontos
     
     
 
 num_times = int(input("Quantos times irão jogar? "))
 cont = 0
-times = ([0] * num_times) - 1
+pont_final_times = [0] * num_times
 
-while cont <= 2:
+while cont < 1:
     cont+=1
     for i in range(0,num_times):
-        print(f"Rodada {cont} / time[{i+1}]: ")
-        jogo_da_forca(times[i])
+        pontos = 0
+        print(f"Rodada {cont} / time[{i+1}]: \n")
+        pont_final_times[i] = jogo_da_forca(pontos)
         
-print("Pontuação final: ")
-for i in range(1,num_times):
-    vencedor = 0
-    print(f"Time {i} = {times[i]} pontos\n")
-    if times[i] > vencedor:
-        vencedor = i
 
-print(f"Vencedor: Time {i}")
+
+os.system("cls")
+print("Pontuação final: \n")
+pontos_vencedor = 0
+numero_vencedor = 0
+for i in range(0,num_times):
+    
+    if pont_final_times[i] > pontos_vencedor:
+        pontos_vencedor = pont_final_times[i]
+        numero_vencedor = i+1
+        print(f"Time {i+1} = {pont_final_times[i]} pontos\n")
+    else:
+        print(f"Time {i+1} = {pont_final_times[i]} pontos\n")
